@@ -30,6 +30,42 @@ class UI {
     this.handlers = {};   // set via ui.on(name, fn)
     this._hudTimer = 0;
     this._wire();
+    this._wireInstall();
+  }
+
+  /**
+   * "Install as App" button. Android/Chrome can trigger a real install
+   * prompt (beforeinstallprompt); iOS has no such API, so the button
+   * walks the player through Share → Add to Home Screen instead.
+   * Hidden entirely when already running as an installed app.
+   */
+  _wireInstall() {
+    const btn = this.$('btn-install');
+    const standalone = window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches
+      || navigator.standalone === true;
+    if (standalone) return;                    // already installed
+
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+    window.addEventListener('appinstalled', () => { btn.style.display = 'none'; });
+
+    btn.style.display = '';
+    btn.addEventListener('click', async () => {
+      this.audio.init(); this.audio.resume(); this.audio.uiClick();
+      if (deferredPrompt) {
+        deferredPrompt.prompt();               // native install dialog
+        const choice = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        if (choice.outcome === 'accepted') btn.style.display = 'none';
+      } else if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        this.toast('📲 Install on iPhone', 'Tap the Share button, then "Add to Home Screen"');
+      } else {
+        this.toast('📲 Install', 'Use your browser menu: "Install app" / "Add to Home Screen"');
+      }
+    });
   }
 
   on(name, fn) { this.handlers[name] = fn; }
