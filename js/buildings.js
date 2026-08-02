@@ -94,22 +94,27 @@ class BuildingField {
    * The web can stick anywhere along a roof's top edge, so each roof
    * above the player is sampled at a few forward offsets and the
    * best-scoring point wins.
+   * `rescue` widens the search (longer reach, slightly-behind grabs
+   * allowed) — used as a fallback when the player is diving.
    */
-  findAnchor(px, py) {
+  findAnchor(px, py, rescue = false) {
+    const range = rescue ? CONFIG.RESCUE_RANGE : CONFIG.WEB_RANGE;
+    const behind = rescue ? CONFIG.RESCUE_BEHIND : 40;
+    const lenCap = rescue ? CONFIG.RESCUE_RANGE : CONFIG.WEB_MAX_LEN;
     let best = null, bestScore = -Infinity;
     for (const b of this.buildings) {
-      if (b.x > px + CONFIG.WEB_RANGE) break;
-      if (b.right < px - 60) continue;
+      if (b.x > px + range) break;
+      if (b.right < px - behind - 20) continue;
       if (b.top > py - 30) continue;           // roof must be above us
       const dy = b.top - py;
-      for (const off of [40, 160, 280, 400]) {
+      for (const off of [-120, 40, 160, 280, 400]) {
         const ax = clamp(px + off, b.x + 8, b.right - 8);
         const dx = ax - px;
-        if (dx < -40) continue;                // don't grab behind us
+        if (dx < -behind) continue;            // how far behind is legal
         const d = Math.hypot(dx, dy);
-        if (d > CONFIG.WEB_RANGE || d < 60) continue;
+        if (d > range || d < 60) continue;
         // A rope this long would swing the player into the street.
-        if (b.top + Math.min(d, CONFIG.WEB_MAX_LEN) > CONFIG.GROUND_Y - 130) continue;
+        if (b.top + Math.min(d, lenCap) > CONFIG.GROUND_Y - 130) continue;
         // Prefer points ahead at a comfortable rope length.
         const score = dx - Math.abs(d - 260) * 0.8 + (-dy) * 0.3;
         if (score > bestScore) { bestScore = score; best = { x: ax, y: b.top - 4 }; }

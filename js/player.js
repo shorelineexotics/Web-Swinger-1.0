@@ -23,7 +23,7 @@ class Player {
     this.started = false;        // gravity off until the first web
     this.rot = 0;                // visual rotation
     this.spin = 0;               // flip speed after release
-    this.web = { state: WEB_STATE.NONE, ax: 0, ay: 0, len: 0, t: 0 };
+    this.web = { state: WEB_STATE.NONE, ax: 0, ay: 0, len: 0, t: 0, rescue: false };
     this.timeSinceRelease = 99;
     this.timeAttached = 0;
     for (const t of this.trail) { t.x = this.x; t.y = this.y; }
@@ -37,12 +37,20 @@ class Player {
   /** Try to fire a web. Returns 'fired' | 'nothing'. */
   fireWeb(buildings) {
     if (this.web.state !== WEB_STATE.NONE || !this.alive) return 'nothing';
-    const a = buildings.findAnchor(this.x, this.y);
+    let a = buildings.findAnchor(this.x, this.y);
+    let rescue = false;
+    // Rescue fallback: nothing in normal reach and we're diving —
+    // search again with the generous rescue rules.
+    if (!a && this.vy > CONFIG.RESCUE_VY) {
+      a = buildings.findAnchor(this.x, this.y, true);
+      rescue = !!a;
+    }
     if (!a) return 'nothing';
     this.started = true;
     this.web.state = WEB_STATE.FIRING;
     this.web.ax = a.x; this.web.ay = a.y;
     this.web.t = 0;
+    this.web.rescue = rescue;
     return 'fired';
   }
 
@@ -81,12 +89,14 @@ class Player {
         if (this.web.t >= 1) {
           this.web.state = WEB_STATE.ATTACHED;
           const d = distance(this.x, this.y, this.web.ax, this.web.ay);
-          this.web.len = clamp(d, CONFIG.WEB_MIN_LEN, CONFIG.WEB_MAX_LEN);
-          // Zip: a kick toward the anchor lifts the arc and starts the
-          // reel-in, so swings ride high instead of skimming rooftops.
+          // A rescue rope may run longer than the normal cap (no snap),
+          // and yanks harder so the reel-in lifts the dive quickly.
+          const cap = this.web.rescue ? CONFIG.RESCUE_RANGE : CONFIG.WEB_MAX_LEN;
+          const zip = this.web.rescue ? CONFIG.RESCUE_ZIP : CONFIG.WEB_ZIP;
+          this.web.len = clamp(d, CONFIG.WEB_MIN_LEN, cap);
           if (d > 1) {
-            this.vx += ((this.web.ax - this.x) / d) * CONFIG.WEB_ZIP;
-            this.vy += ((this.web.ay - this.y) / d) * CONFIG.WEB_ZIP;
+            this.vx += ((this.web.ax - this.x) / d) * zip;
+            this.vy += ((this.web.ay - this.y) / d) * zip;
           }
           this.timeAttached = 0;
           game.onWebAttached();
@@ -198,8 +208,9 @@ class Player {
       const t = this.web.state === WEB_STATE.FIRING ? clamp(this.web.t, 0, 1) : 1;
       const ex = lerp(this.x, this.web.ax, t);
       const ey = lerp(this.y, this.web.ay, t);
-      ctx.strokeStyle = 'rgba(240,244,255,0.95)';
-      ctx.lineWidth = 2.5;
+      // Rescue webs render thicker so a clutch save reads instantly.
+      ctx.strokeStyle = this.web.rescue ? 'rgba(255,250,220,0.98)' : 'rgba(240,244,255,0.95)';
+      ctx.lineWidth = this.web.rescue ? 4 : 2.5;
       ctx.beginPath();
       // Slight sag while attached & slack-ish, straight while firing.
       ctx.moveTo(this.x, this.y - 4);

@@ -127,7 +127,7 @@ class Game {
     this.timeScale = 1; this.targetTimeScale = 1; this.slowmoTimer = 0;
     this.deadTimer = 0; this.goShown = false;
 
-    this.stats = { swings: 0, meters: 0, combo: 0, nearMisses: 0, topKmh: 0, playedDaily: daily };
+    this.stats = { swings: 0, meters: 0, combo: 0, nearMisses: 0, topKmh: 0, rescues: 0, playedDaily: daily };
 
     this.state = STATE.PLAYING;
     this.ui.hideAll();
@@ -158,8 +158,16 @@ class Game {
   onWebAttached() {
     this.audio.attach();
     this.stats.swings++;
-    this.effects.shake(CONFIG.SHAKE_ATTACH);
-    this.effects.sparks(this.player.web.ax, this.player.web.ay, 0, 1, 5, '#f4f7ff');
+    if (this.player.web.rescue) {
+      // Clutch save: heavier feedback than a routine attach.
+      this.stats.rescues++;
+      this.audio.nearMiss();
+      this.effects.shake(CONFIG.SHAKE_ATTACH * 2.5);
+      this.effects.sparks(this.player.web.ax, this.player.web.ay, 0, 1, 10, '#ffe36b');
+    } else {
+      this.effects.shake(CONFIG.SHAKE_ATTACH);
+      this.effects.sparks(this.player.web.ax, this.player.web.ay, 0, 1, 5, '#f4f7ff');
+    }
   }
 
   die(reason) {

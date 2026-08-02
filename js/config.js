@@ -37,6 +37,14 @@ const CONFIG = {
   WEB_FIRE_TIME: 0.055,    // seconds for the web to visually reach anchor
   WEB_ZIP: 260,            // attach impulse toward the anchor (thwip-zip)
 
+  // --- Rescue grab -------------------------------------------
+  // When the normal search finds nothing and the player is diving,
+  // a second, more generous search runs so a fall can be saved.
+  RESCUE_VY: 300,          // must be falling at least this fast
+  RESCUE_RANGE: 620,       // extended search radius
+  RESCUE_BEHIND: 150,      // may grab up to this far behind the player
+  RESCUE_ZIP: 430,         // harder yank toward the anchor on attach
+
   // --- Pace (the "never stop moving" pressure) ----------------
   PACE_BASE: 300,          // px/s scroll floor at distance 0
   PACE_MAX_BONUS: 520,     // added by the time difficulty maxes out

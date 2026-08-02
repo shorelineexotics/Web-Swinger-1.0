@@ -93,6 +93,17 @@ Rerun the harness anytime from the browser console: bots call
 
 ---
 
+## Added 2026-08-02
+
+- **Mobile**: audio session set to 'playback' (sound works with iPhone
+  silent switch on); `CAM_MIN_SCALE: 0.52` floors landscape zoom.
+- **Rescue grab**: when the NORMAL anchor search fails and the player is
+  diving (`vy > RESCUE_VY 300`), a fallback search runs with longer reach
+  (`RESCUE_RANGE 620`), slightly-behind grabs (`RESCUE_BEHIND 150`), and a
+  harder yank (`RESCUE_ZIP 430`). Rescue webs draw thicker with heavier
+  attach feedback. Normal play is unaffected (fallback-only); verified:
+  casual bot profile unchanged, reckless-bot street deaths 0/20 runs.
+
 ## Ideas parked for next session
 
 - Surgical fix for "short roof + long rope + tall obstacle" moments
