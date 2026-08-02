@@ -57,6 +57,7 @@ class UI {
     click('btn-go-restart', 'restart');
     click('btn-go-menu', 'quit');
     click('btn-fullscreen', 'fullscreen');
+    click('btn-fs-corner', 'fullscreen');
 
     // Settings controls.
     const s = Storage.data.settings;

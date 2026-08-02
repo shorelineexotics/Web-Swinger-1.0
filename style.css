@@ -179,6 +179,22 @@ h2 { font-size: clamp(28px, 5vw, 44px); letter-spacing: 4px; text-shadow: 3px 3p
 .go-distance { font-size: clamp(44px, 9vw, 84px); font-weight: bold; text-shadow: 0 4px 0 rgba(0,0,0,0.5); }
 .go-best { color: var(--dim); font-size: 18px; }
 
+/* ---------- Fullscreen corner button ---------- */
+
+#btn-fs-corner {
+  position: fixed; bottom: 14px; left: 14px; z-index: 30;
+  width: 44px; height: 44px; padding: 0;
+  font-size: 22px; line-height: 1; color: var(--ink);
+  background: rgba(20, 14, 38, 0.55); border: 2px solid rgba(74, 63, 116, 0.7);
+  border-radius: 6px; cursor: pointer; opacity: 0.55;
+  transition: opacity 0.15s;
+}
+#btn-fs-corner:hover { opacity: 1; }
+/* Hidden when running as an installed app — no browser chrome to escape. */
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  #btn-fs-corner { display: none; }
+}
+
 /* ---------- Toasts ---------- */
 
 #toasts {

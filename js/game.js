@@ -97,8 +97,18 @@ class Game {
     ui.on('flashChanged', v => { this.effects.reducedFlash = v; });
     ui.on('colorblindChanged', v => { this.colorblind = v; });
     ui.on('fullscreen', () => {
-      if (document.fullscreenElement) document.exitFullscreen();
-      else document.documentElement.requestFullscreen?.();
+      // iOS Safari (16.4+) only exposes the webkit-prefixed API.
+      const doc = document, el = document.documentElement;
+      if (doc.fullscreenElement || doc.webkitFullscreenElement) {
+        (doc.exitFullscreen || doc.webkitExitFullscreen).call(doc);
+      } else if (el.requestFullscreen) {
+        el.requestFullscreen();
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      } else {
+        // Very old iOS: no fullscreen API at all.
+        ui.toast('📱 Tip', 'Share → Add to Home Screen for fullscreen play');
+      }
     });
   }
 
