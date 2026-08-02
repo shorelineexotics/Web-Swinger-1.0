@@ -95,14 +95,36 @@ Rerun the harness anytime from the browser console: bots call
 
 ## Added 2026-08-02
 
-- **Mobile**: audio session set to 'playback' (sound works with iPhone
-  silent switch on); `CAM_MIN_SCALE: 0.52` floors landscape zoom.
+- **Mobile audio**: audio session set to 'playback' (sound works with the
+  iPhone silent switch on, iOS 16.4+).
+- **Landscape zoom**: `CAM_MIN_SCALE: 0.52` floors the camera scale so
+  short landscape screens don't zoom out to a distant view.
 - **Rescue grab**: when the NORMAL anchor search fails and the player is
   diving (`vy > RESCUE_VY 300`), a fallback search runs with longer reach
   (`RESCUE_RANGE 620`), slightly-behind grabs (`RESCUE_BEHIND 150`), and a
   harder yank (`RESCUE_ZIP 430`). Rescue webs draw thicker with heavier
   attach feedback. Normal play is unaffected (fallback-only); verified:
   casual bot profile unchanged, reckless-bot street deaths 0/20 runs.
+- **Fullscreen**: corner ⛶ button (bottom-left, hidden when installed);
+  the handler falls back to webkit-prefixed fullscreen for iOS Safari.
+- **Installable app (PWA)**: `manifest.json`, apple-touch meta tags, and
+  generated icons (180/192/512, drawn by a scratch Python script) —
+  "Add to Home Screen" runs chrome-free in fullscreen landscape.
+- **📲 Install as App menu button**: Android/Chrome fires the native
+  install prompt via `beforeinstallprompt`; iOS shows Share → Add to
+  Home Screen instructions (Apple allows no programmatic install).
+  Button hides itself when already installed. iOS caveat: instructions
+  only work in real Safari, not in-app browsers.
+
+## Publishing
+
+- **Live site**: https://shorelineexotics.github.io/Web-Swinger-1.0/
+  (GitHub Pages, repo `shorelineexotics/Web-Swinger-1.0`, public).
+  Deploys automatically ~1 min after every push to `main`.
+- **Workflow**: Claude commits locally → user pushes via GitHub Desktop.
+- **Claude artifact** (claude.ai/code/artifact/dfcf57bc-…): static
+  snapshot, currently BEHIND the repo (predates the mobile work).
+  Republish on request; it does not track local files.
 
 ## Ideas parked for next session
 
