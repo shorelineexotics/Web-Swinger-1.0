@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Web Swinger 1.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div id="hud-distance">0m</div>
+    <div id="hud-speed">0 km/h</div>
+    <div id="hud-best">BEST 0m</div>
+    <div id="hud-combo"></div>
+    <div id="hud-hint"></div>
+  </div>
+
+  <!-- Toast stack (achievements / unlocks) -->
+  <div id="toasts"></div>
+
+  <!-- Main menu -->
+  <div class="screen visible" id="screen-menu">
+    <h1 class="logo">WEB<span>SWINGER</span></h1>
+    <p class="tagline">Hold to web. Release to fly. Don't stop.</p>
+    <p class="menu-best">Best run: <span id="menu-best">0m</span></p>
+    <div class="menu-buttons">
+      <button class="btn primary" id="btn-play">Play</button>
+      <button class="btn" id="btn-daily">Daily Challenge</button>
+      <button class="btn" id="btn-skins">Skins</button>
+      <button class="btn" id="btn-achievements">Achievements</button>
+      <button class="btn" id="btn-settings">Settings</button>
+      <button class="btn" id="btn-credits">Credits</button>
+    </div>
+    <p class="controls-hint">Desktop: hold SPACE / click &nbsp;·&nbsp; Mobile: touch &amp; hold</p>
+  </div>
+
+  <!-- Settings -->
+  <div class="screen" id="screen-settings">
+    <h2>Settings</h2>
+    <div class="settings-grid">
+      <label>Music volume
+        <input type="range" id="set-music" min="0" max="1" step="0.05">
+      </label>
+      <label>SFX volume
+        <input type="range" id="set-sfx" min="0" max="1" step="0.05">
+      </label>
+      <label class="toggle">Screen shake
+        <input type="checkbox" id="set-shake">
+      </label>
+      <label class="toggle">Colorblind-friendly hazards
+        <input type="checkbox" id="set-colorblind">
+      </label>
+      <label class="toggle">Reduced flashing
+        <input type="checkbox" id="set-flash">
+      </label>
+      <button class="btn" id="btn-fullscreen">Toggle fullscreen</button>
+    </div>
+    <button class="btn" id="btn-settings-back">Back</button>
+  </div>
+
+  <!-- Skins -->
+  <div class="screen" id="screen-skins">
+    <h2>Skins</h2>
+    <div id="skins-grid"></div>
+    <button class="btn" id="btn-skins-back">Back</button>
+  </div>
+
+  <!-- Achievements -->
+  <div class="screen" id="screen-achievements">
+    <h2>Achievements</h2>
+    <div id="ach-list"></div>
+    <button class="btn" id="btn-ach-back">Back</button>
+  </div>
+
+  <!-- Credits -->
+  <div class="screen" id="screen-credits">
+    <h2>Credits</h2>
+    <p class="credits-body">
+      Design, code, pixel art &amp; procedural audio<br>
+      built with vanilla JavaScript + Canvas.<br><br>
+      Inspired by the rhythm of impossible games<br>
+      and the swing of friendly neighborhood heroes.<br><br>
+      Drop your own track at <code>assets/audio/music.mp3</code>.
+    </p>
+    <button class="btn" id="btn-credits-back">Back</button>
+  </div>
+
+  <!-- Pause -->
+  <div class="screen translucent" id="screen-pause">
+    <h2>Paused</h2>
+    <div class="menu-buttons">
+      <button class="btn primary" id="btn-resume">Resume</button>
+      <button class="btn" id="btn-restart">Restart</button>
+      <button class="btn" id="btn-quit">Main Menu</button>
+    </div>
+  </div>
+
+  <!-- Game over -->
+  <div class="screen translucent" id="screen-gameover">
+    <h2 class="go-title">WASTED THE WEB</h2>
+    <div id="go-newbest">★ NEW BEST ★</div>
+    <div class="go-distance" id="go-distance">0m</div>
+    <div class="go-best" id="go-best">Best: 0m</div>
+    <div class="menu-buttons">
+      <button class="btn primary" id="btn-go-restart">Swing Again</button>
+      <button class="btn" id="btn-go-menu">Main Menu</button>
+    </div>
+    <p class="controls-hint">…or just tap / press SPACE</p>
+  </div>
+
+  <!-- Modules (plain scripts so the game runs from file:// too) -->
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/input.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/background.js"></script>
+  <script src="js/buildings.js"></script>
+  <script src="js/obstacles.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/achievements.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
