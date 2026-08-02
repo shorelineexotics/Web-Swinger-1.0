@@ -30,6 +30,12 @@ class AudioSys {
     if (this.ctx) return;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
+    // iOS Safari mutes WebAudio when the ring/silent switch is on
+    // silent. Declaring a "playback" audio session (iOS 16.4+) routes
+    // the game like a music app, so it stays audible either way.
+    try {
+      if (navigator.audioSession) navigator.audioSession.type = 'playback';
+    } catch (e) { /* older iOS — silent switch still applies */ }
     this.ctx = new AC();
     this.master = this.ctx.createGain();
     this.master.connect(this.ctx.destination);

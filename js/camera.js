@@ -13,8 +13,11 @@ class Camera {
 
   resize(w, h) { this.viewW = w; this.viewH = h; }
 
-  /** Scale from world units to CSS pixels. */
-  get scale() { return this.zoom * (this.viewH / CONFIG.REF_VIEW_HEIGHT); }
+  /** Scale from world units to CSS pixels (floored for short screens). */
+  get scale() {
+    return Math.max(this.zoom * (this.viewH / CONFIG.REF_VIEW_HEIGHT),
+      CONFIG.CAM_MIN_SCALE);
+  }
   get worldLeft() { return this.x - (this.viewW / 2) / this.scale; }
   get worldRight() { return this.x + (this.viewW / 2) / this.scale; }
   get worldTop() { return this.y - (this.viewH / 2) / this.scale; }

@@ -64,6 +64,9 @@ const CONFIG = {
   CAM_ZOOM_MIN: 0.62,      // zoom at max speed (zoomed out)
   CAM_ZOOM_MAX: 0.86,      // zoom when slow
   CAM_ZOOM_SPEED_REF: 1500,
+  CAM_MIN_SCALE: 0.44,     // floor on world scale — stops short screens
+                           // (phones in landscape) from zooming out to
+                           // a tiny, distant view
 
   // --- Feel ----------------------------------------------------
   NEAR_MISS_DIST: 26,      // extra radius that counts as a near miss
